@@ -66,14 +66,14 @@ int main(int argc, char *argv[])
     if (percent != lastpercent)
       fprintf(stdout, "%d%%\n", percent);
     lastpercent = percent;
-    if (i + 1 < len && i % 21 == 0)
-      sprintf(piece, "%d, \n", wavBuf[i]);
+    if (i + 1 < len && i % 77 == 0)
+      sprintf(piece, "%d,\n", wavBuf[i]);
     else if (i + 1 < len)
-      sprintf(piece, "%d, ", wavBuf[i]);
+      sprintf(piece, "%d,", wavBuf[i]);
     else
       sprintf(piece, "%d }", wavBuf[i]);
     piecelen = mystrnlen(piece, 255);
-    strncat(contents, piece, piecelen + 2 + ((i % 21 == 0) ? 1 : 0));
+    strncat(contents, piece, piecelen + 1 + ((i + 1 == len) ? 1 : 0) + ((i % 77 == 0) ? 1 : 0));
     numtowrite = mystrnlen(contents, contentslen);
     totalwritten = 0;
     while(numtowrite > 0) {
