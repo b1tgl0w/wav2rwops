@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     exit(1);
   }
   namelen = mystrnlen(argv[1], 255);
-  strncat(contents, "Uint8 ", 6);
+  strncat(contents, "char ", 5);
   strncat(contents, argv[1], namelen-4);
   strncat(contents, "wav[] = { ", 10);
   numtowrite = mystrnlen(contents, contentslen);
