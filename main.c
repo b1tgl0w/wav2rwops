@@ -13,6 +13,8 @@ int main(int argc, char *argv[])
 {
   Uint32 i = 0;
   Uint32 len;
+  Uint32 wavelenstrlen = 0;
+  char wavelenstr[255];
   FILE *f;
   size_t totalwritten = 0;
   size_t numtowrite = 0;
@@ -45,7 +47,11 @@ int main(int argc, char *argv[])
   namelen = mystrnlen(argv[1], 255);
   strncat(contents, "Uint8 ", 6);
   strncat(contents, argv[1], namelen-4);
-  strncat(contents, "wav[] = { ", 10);
+  strncat(contents, "wav[", 4);
+  sprintf(wavelenstr, "%d", len);
+  wavelenstrlen = mystrnlen(wavelenstr, 255);
+  strncat(contents, wavelenstr, wavelenstrlen);
+  strncat(contents, "] = { ", 6);
   numtowrite = mystrnlen(contents, contentslen);
   totalwritten = 0;
   while(numtowrite > 0) {
