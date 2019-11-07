@@ -1,6 +1,5 @@
 #define _POSIX_C_SOURCE 1
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,22 +14,24 @@ int main(int argc, char *argv[])
   Uint32 i = 0;
   Uint32 len;
   FILE *f;
-  SDL_AudioSpec spec;
   size_t totalwritten = 0;
   size_t numtowrite = 0;
   size_t numwritten = 0;
   size_t namelen = 0;
   int lastpercent = -1;
+  SDL_AudioSpec desiredSpec;
+  SDL_AudioSpec obtainedSpec;
+  desiredSpec.freq = 44100;
+  desiredSpec.channels = 2;
   contents[0] = '\0';
   if (argc != 3) {
     fprintf(stderr, "Usage: ./wavToRwops in.wav out.c\n");
     exit(1);
   }
   SDL_Init(SDL_INIT_EVERYTHING);
-  Mix_Init(0);
-  if(SDL_LoadWAV(argv[1], &spec, &wavBuf, &len) == NULL) {
+  SDL_OpenAudio(&desiredSpec, &obtainedSpec);
+  if(SDL_LoadWAV(argv[1], &obtainedSpec, &wavBuf, &len) == NULL) {
     fprintf(stderr, "Failed to load wav\n");
-    Mix_Quit();
     SDL_Quit();
     exit(1);
   }
@@ -38,7 +39,6 @@ int main(int argc, char *argv[])
   if (f == NULL) {
     fprintf(stderr, "Failed to open output file\n");
     SDL_FreeWAV(wavBuf);
-    Mix_Quit();
     SDL_Quit();
     exit(1);
   }

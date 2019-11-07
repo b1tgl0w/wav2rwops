@@ -23,7 +23,7 @@ main-build: pre-build
 main-target: obj/wavToRwops
 
 obj/wavToRwops: obj/main.o
-	$(CC) $(CC_FLAGS) obj/main.o -o obj/wavToRwops -Wl,-Bstatic /home/cy/elib/lib/libSDL2.a /home/cy/elib/lib/libSDL2main.a /home/cy/elib/lib/libSDL2_mixer.a -Wl,-Bdynamic -lpthread -ldl -lm
+	$(CC) $(CC_FLAGS) obj/main.o -o obj/wavToRwops -Wl,-Bstatic /home/cy/elib/lib/libSDL2.a /home/cy/elib/lib/libSDL2main.a -Wl,-Bdynamic -lpthread -ldl -lm
 
 obj/main.o: main.c
 	$(CC) $(CC_FLAGS) -c main.c -o obj/main.o
