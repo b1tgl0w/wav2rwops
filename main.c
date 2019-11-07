@@ -1,47 +1,61 @@
 #define _POSIX_C_SOURCE 1
-#include <SDL2/SDL.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#define buflen 999999999 
 #define contentslen 999999999
 
-Uint8 *wavBuf;
+unsigned char wavBuf[buflen];
 char contents[contentslen];
 size_t mystrnlen(char *s, size_t maxlen);
 int main(int argc, char *argv[])
 {
-  Uint32 i = 0;
-  Uint32 len;
-  Uint32 wavelenstrlen = 0;
+  unsigned int i = 0;
+  unsigned int j = 0;
+  unsigned int len = 0;
+  unsigned int wavelenstrlen = 0;
   char wavelenstr[255];
   FILE *f;
+  FILE *e;
   size_t totalwritten = 0;
   size_t numtowrite = 0;
   size_t numwritten = 0;
   size_t namelen = 0;
   int lastpercent = -1;
-  SDL_AudioSpec desiredSpec;
-  SDL_AudioSpec obtainedSpec;
-  desiredSpec.freq = 44100;
-  desiredSpec.channels = 2;
+  unsigned char buf[256];
   contents[0] = '\0';
   if (argc != 3) {
     fprintf(stderr, "Usage: ./wavToRwops in.wav out.c\n");
     exit(1);
   }
-  SDL_Init(SDL_INIT_EVERYTHING);
-  SDL_OpenAudio(&desiredSpec, &obtainedSpec);
-  if(SDL_LoadWAV(argv[1], &obtainedSpec, &wavBuf, &len) == NULL) {
-    fprintf(stderr, "Failed to load wav\n");
-    SDL_Quit();
+  e = fopen(argv[1], "rb");
+  if (e == NULL) {
+    fprintf(stderr, "Failed to open input file\n");
     exit(1);
   }
+  while(feof(e) == 0) {
+    size_t numread = fread(buf, sizeof(unsigned char), 256, e);
+    if (ferror(e)) {
+      fprintf(stderr, "Read error: %d. Exiting.\n", errno);
+      fclose(e);
+      exit(1);
+    }
+    for (i = 0; i < numread; ++i) {
+      wavBuf[j++] = buf[i];
+      if ((j + 1) == buflen) {
+        fprintf(stderr, "Too big.\n");
+        fclose(e);
+        exit(1);
+      }
+    }
+  }
+  len=j - 1;
+  fclose(e);
   f = fopen(argv[2], "w");
   if (f == NULL) {
     fprintf(stderr, "Failed to open output file\n");
-    SDL_FreeWAV(wavBuf);
-    SDL_Quit();
     exit(1);
   }
   namelen = mystrnlen(argv[1], 255);
