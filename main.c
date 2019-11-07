@@ -45,12 +45,17 @@ int main(int argc, char *argv[])
     exit(1);
   }
   namelen = mystrnlen(argv[1], 255);
+  strncat(contents, "#define ", 8);
+  strncat(contents, argv[1], namelen-4);
+  strncat(contents, "wavlen ", 7);
+  sprintf(wavelenstr, "%d\n", len+1);
+  wavelenstrlen = mystrnlen(wavelenstr, 255);
+  strncat(contents, wavelenstr, wavelenstrlen);
   strncat(contents, "Uint8 ", 6);
   strncat(contents, argv[1], namelen-4);
   strncat(contents, "wav[", 4);
-  sprintf(wavelenstr, "%d", len);
-  wavelenstrlen = mystrnlen(wavelenstr, 255);
-  strncat(contents, wavelenstr, wavelenstrlen);
+  strncat(contents, argv[1], namelen-4);
+  strncat(contents, "wavlen", 6);
   strncat(contents, "] = { ", 6);
   numtowrite = mystrnlen(contents, contentslen);
   totalwritten = 0;
